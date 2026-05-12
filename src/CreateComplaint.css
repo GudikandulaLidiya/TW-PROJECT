@@ -1,0 +1,38 @@
+.create-container {
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+.complaint-form {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.input-field {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.submit-btn {
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #1d4ed8;
+}
