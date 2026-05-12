@@ -1,36 +1,41 @@
 import React, { useState } from "react";
 import "./CreateComplaint.css";
-import { addComplaint } from "./api";
+
 
 function CreateComplaint() {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newComplaint = {
-      title,
-      location,
-      date,
-      status: "Pending",
-      image:
-        image ||
-        "https://images.unsplash.com/photo-1581091215367-59ab6dcef10d?q=80&w=400",
-    };
+    const formData = new FormData();
 
-    addComplaint(newComplaint)
-      .then((data) => {
-        alert(data.message);
+    formData.append("title", title);
+    formData.append("location", location);
+    formData.append("date", date);
+    formData.append("status", "Pending");
+    formData.append("image", image);
 
-        setTitle("");
-        setLocation("");
-        setDate("");
-        setImage("");
-      })
-      .catch((err) => console.log(err));
+    try {
+      const response = await fetch("http://localhost:5000/complaints", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      alert(data.message);
+
+      setTitle("");
+      setLocation("");
+      setDate("");
+      setImage(null);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -43,7 +48,6 @@ function CreateComplaint() {
           placeholder="Complaint Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="input-field"
           required
         />
 
@@ -52,7 +56,6 @@ function CreateComplaint() {
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="input-field"
           required
         />
 
@@ -60,21 +63,16 @@ function CreateComplaint() {
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="input-field"
           required
         />
 
         <input
-          type="text"
-          placeholder="Image URL (optional)"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-          className="input-field"
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+          required
         />
 
-        <button type="submit" className="submit-btn">
-          Submit Complaint
-        </button>
+        <button type="submit">Submit Complaint</button>
       </form>
     </div>
   );

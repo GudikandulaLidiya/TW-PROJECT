@@ -1,10 +1,7 @@
-export const addComplaint = async (complaintData) => {
+export const addComplaint = async (formData) => {
   const response = await fetch("http://localhost:5000/complaints", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(complaintData),
+    body: formData,
   });
 
   return response.json();

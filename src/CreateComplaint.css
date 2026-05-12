@@ -1,3 +1,7 @@
+body {
+  background: #f1f5f9;
+}
+
 .create-container {
   padding: 30px;
   font-family: Arial, sans-serif;
@@ -6,33 +10,61 @@
 .complaint-form {
   display: flex;
   flex-direction: column;
-  width: 320px;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 16px;
+
+  width: 400px;
+  margin: 40px auto;
+  padding: 35px;
+
+  background: white;
+  border-radius: 20px;
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  border: 1px solid #e2e8f0;
 }
 
-.input-field {
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
+/* title (if you have h1) */
+.create-container h1 {
+  text-align: center;
+  color: #1e293b;
 }
 
-.input-field:focus {
+/* inputs */
+.complaint-form input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.complaint-form input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.2);
 }
 
-.submit-btn {
+/* file input */
+.complaint-form input[type="file"] {
+  background: #f8fafc;
+  padding: 10px;
+}
+
+/* button */
+.complaint-form button {
   padding: 12px;
-  background-color: #2563eb;
-  color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 10px;
+
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: white;
+  font-weight: bold;
   cursor: pointer;
+
+  transition: 0.2s;
 }
 
-.submit-btn:hover {
-  background-color: #1d4ed8;
+.complaint-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37,99,235,0.3);
 }

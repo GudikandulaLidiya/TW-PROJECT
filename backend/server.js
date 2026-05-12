@@ -1,22 +1,26 @@
 const express = require("express");
+const multer = require("multer");
 const cors = require("cors");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
-let complaints = [
-  {
-    id: 1,
-    title: "Pothole on MG Road",
-    location: "Bengaluru",
-    date: "20 May 2024",
-    status: "Pending",
-    image:
-      "https://images.unsplash.com/photo-1581091215367-59ab6dcef10d?q=80&w=400",
+let complaints = []; // ADD THIS
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
   },
-];
+
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
 
 // GET complaints
 app.get("/complaints", (req, res) => {
@@ -24,19 +28,20 @@ app.get("/complaints", (req, res) => {
 });
 
 // POST complaint
-app.post("/complaints", (req, res) => {
+app.post("/complaints", upload.single("image"), (req, res) => {
   const newComplaint = {
-    id: complaints.length + 1,
-    ...req.body,
+    id: Date.now(),
+    title: req.body.title,
+    location: req.body.location,
+    date: req.body.date,
+    status: req.body.status,
+    image: `http://localhost:5000/uploads/${req.file.filename}`,
   };
 
   complaints.push(newComplaint);
 
-  console.log("New Complaint Added:");
-  console.log(newComplaint);
-
   res.json({
-    message: "Complaint added successfully",
+    message: "Complaint Added Successfully",
   });
 });
 

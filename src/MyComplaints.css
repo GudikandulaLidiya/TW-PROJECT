@@ -4,12 +4,12 @@ body {
   background-color: #f4f7fb;
 }
 
+/* MAIN LAYOUT */
 .container {
   display: flex;
 }
 
-/* Sidebar */
-
+/* SIDEBAR */
 .sidebar {
   width: 220px;
   min-height: 100vh;
@@ -31,19 +31,21 @@ body {
 .sidebar li {
   padding: 12px;
   margin-bottom: 10px;
-  cursor: pointer;
   border-radius: 8px;
 }
 
+/* hover only for non-active items */
 .sidebar li:hover {
   background-color: #f1f5f9;
 }
 
-.active {
+/* IMPORTANT FIX: scoped active */
+.sidebar li.active {
   background-color: #dbeafe;
   font-weight: bold;
 }
 
+/* LINKS */
 .sidebar a {
   text-decoration: none;
   color: black;
@@ -51,18 +53,25 @@ body {
   display: block;
 }
 
+/* 🔴 FIXED LOGOUT BUTTON (NO COLOR CHANGE EVER) */
 .logout-btn {
-  background-color: red;
-  color: white;
-  border: none;
+  all: unset;
+  background-color: #ef4444;
+  color: white !important;
   padding: 10px 15px;
   border-radius: 8px;
   cursor: pointer;
   width: 100%;
+  text-align: center;
+  display: block;
+  font-weight: bold;
 }
 
-/* Main */
+.logout-btn:hover {
+  background-color: #dc2626;
+}
 
+/* MAIN SECTION */
 .main {
   flex: 1;
   padding: 30px;
@@ -82,8 +91,7 @@ body {
   margin-top: 0;
 }
 
-/* Cards */
-
+/* CARDS */
 .card {
   background-color: white;
   padding: 15px;
@@ -111,6 +119,7 @@ body {
   margin-bottom: 10px;
 }
 
+/* STATUS BADGES */
 .pending {
   background-color: #fff3cd;
   color: orange;
@@ -135,6 +144,7 @@ body {
   font-weight: bold;
 }
 
+/* RIGHT SECTION */
 .right-section {
   display: flex;
   align-items: center;
