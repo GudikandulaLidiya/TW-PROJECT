@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./CreateComplaint.css";
 import { createComplaint } from "./api";
 
@@ -6,6 +7,7 @@ function CreateComplaint() {
   const [form, setForm] = useState({
     title: "",
     location: "",
+    description: "",
     date: "",
     image: null,
   });
@@ -32,6 +34,7 @@ function CreateComplaint() {
 
     formData.append("title", form.title);
     formData.append("location", form.location);
+    formData.append("description", form.description);
     formData.append("date", form.date);
     formData.append("status", "Pending");
     formData.append("image", form.image);
@@ -39,17 +42,21 @@ function CreateComplaint() {
     try {
       const response = await createComplaint(formData);
 
-      setMessage(response.message || "Complaint submitted successfully ✅");
+      setMessage(
+        response.message ||
+          "Complaint submitted successfully ✅"
+      );
 
       setForm({
         title: "",
         location: "",
+        description: "",
         date: "",
         image: null,
       });
     } catch (error) {
       console.log(error);
-      setMessage("Something went wrong ❌ Please try again");
+      setMessage("Something went wrong ❌");
     } finally {
       setLoading(false);
     }
@@ -57,49 +64,95 @@ function CreateComplaint() {
 
   return (
     <div className="create-container">
-      <h1>Create Complaint</h1>
 
-      <form onSubmit={handleSubmit} className="complaint-form">
-        <input
-          type="text"
-          name="title"
-          placeholder="Complaint Title"
-          value={form.title}
-          onChange={handleChange}
-          required
-        />
+      {/* SIDEBAR */}
+      <div className="sidebar">
+        <h2>CivicTrack</h2>
 
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          value={form.location}
-          onChange={handleChange}
-          required
-        />
+        <ul>
+          <li>
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
 
-        <input
-          type="date"
-          name="date"
-          value={form.date}
-          onChange={handleChange}
-          required
-        />
+          <li>
+            <Link to="/create">Create Complaint</Link>
+          </li>
 
-        <input
-          type="file"
-          name="image"
-          onChange={handleChange}
-          required
-        />
+          <li>
+            <Link to="/">My Complaints</Link>
+          </li>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Submitting..." : "Submit Complaint"}
-        </button>
-      </form>
+          <li>
+            <button>
+              Logout
+            </button>
+          </li>
+        </ul>
+      </div>
 
-      {/* MESSAGE DISPLAY */}
-      {message && <p className="message">{message}</p>}
+      {/* FORM SECTION */}
+      <div className="form-section">
+
+        <form
+          onSubmit={handleSubmit}
+          className="complaint-form"
+        >
+
+          <h1>Create Complaint</h1>
+
+          <input
+            type="text"
+            name="title"
+            placeholder="Complaint Title"
+            value={form.title}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={form.location}
+            onChange={handleChange}
+            required
+          />
+
+          <textarea
+            name="description"
+            placeholder="Describe the issue in detail..."
+            value={form.description}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="date"
+            name="date"
+            value={form.date}
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="file"
+            name="image"
+            onChange={handleChange}
+            required
+          />
+
+          <button type="submit" disabled={loading}>
+            {loading
+              ? "Submitting..."
+              : "Submit Complaint"}
+          </button>
+
+          {message && (
+            <p className="message">{message}</p>
+          )}
+
+        </form>
+      </div>
     </div>
   );
 }

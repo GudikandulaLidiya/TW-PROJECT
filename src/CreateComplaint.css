@@ -1,79 +1,255 @@
+/* GLOBAL */
 body {
-  background: #f1f5f9;
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f7fb;
 }
 
+/* PAGE */
 .create-container {
-  padding: 30px;
-  font-family: Arial, sans-serif;
-}
-
-.complaint-form {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  min-height: 100vh;
+}
 
-  width: 400px;
-  margin: 40px auto;
-  padding: 35px;
-
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
   background: white;
-  border-radius: 20px;
+  border-right: 1px solid #e2e8f0;
 
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-  border: 1px solid #e2e8f0;
+  padding: 20px;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  height: 100vh;
+  box-sizing: border-box;
 }
 
-.message {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 8px;
-  font-weight: bold;
-  background-color: #e6ffe6;
-  color: green;
+.sidebar h2 {
+  color: #2563eb;
+  margin-bottom: 40px;
+  font-size: 28px;
+  font-weight: 700;
 }
 
-/* title (if you have h1) */
-.create-container h1 {
-  text-align: center;
-  color: #1e293b;
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-/* inputs */
-.complaint-form input {
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  font-size: 15px;
-  transition: 0.2s;
+.sidebar li {
+  margin-bottom: 18px;
 }
 
-.complaint-form input:focus {
-  outline: none;
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 3px rgba(14,165,233,0.2);
-}
+.sidebar a,
+.sidebar button {
+  display: flex;
+  align-items: center;
 
-/* file input */
-.complaint-form input[type="file"] {
-  background: #f8fafc;
-  padding: 10px;
-}
+  width: 100%;
 
-/* button */
-.complaint-form button {
-  padding: 12px;
+  padding: 14px 16px;
+
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
 
-  background: linear-gradient(135deg, #0ea5e9, #2563eb);
-  color: white;
-  font-weight: bold;
+  background: transparent;
+
+  text-decoration: none;
+
+  color: #334155;
+  font-size: 15px;
+  font-weight: 500;
+
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: 0.3s;
+  box-sizing: border-box;
+}
+
+.sidebar a:hover,
+.sidebar button:hover {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+/* FORM AREA */
+.form-section {
+  margin-left: 240px;
+
+  width: calc(100% - 240px);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 50px 30px;
+
+  box-sizing: border-box;
+}
+
+/* FORM */
+.complaint-form {
+  width: 100%;
+  max-width: 720px;
+
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 24px;
+
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 22px;
+}
+
+/* TITLE */
+.complaint-form h1 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 34px;
+}
+
+/* INPUTS */
+.complaint-form input,
+.complaint-form textarea {
+  width: 100%;
+
+  padding: 16px 18px;
+
+  border-radius: 14px;
+  border: 1px solid #dbe2ea;
+
+  font-size: 16px;
+
+  background: #f8fafc;
+
+  color: #0f172a;
+
+  box-sizing: border-box;
+
+  transition: 0.3s;
+}
+
+/* PLACEHOLDER */
+.complaint-form input::placeholder,
+.complaint-form textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* INPUT FOCUS */
+.complaint-form input:focus,
+.complaint-form textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+}
+
+/* TEXTAREA */
+.complaint-form textarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* DATE INPUT */
+input[type="date"] {
+  color: #0f172a;
+  appearance: auto;
+  -webkit-appearance: auto;
+  cursor: pointer;
+}
+
+/* DATE TEXT */
+input[type="date"]::-webkit-datetime-edit {
+  color: #0f172a;
+}
+
+/* CALENDAR ICON */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+  filter: invert(25%);
+}
+
+/* FILE INPUT */
+input[type="file"] {
+  background: white;
+  cursor: pointer;
+  color: #0f172a;
+}
+
+/* BUTTON */
+.complaint-form button {
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+
+  color: white;
+
+  border: none;
+  border-radius: 14px;
+
+  padding: 18px;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.3s;
 }
 
 .complaint-form button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+
+  box-shadow: 0 10px 20px
+    rgba(37,99,235,0.25);
+}
+
+/* MESSAGE */
+.message {
+  padding: 14px;
+
+  border-radius: 10px;
+
+  background: #dcfce7;
+  color: #15803d;
+
+  font-weight: 600;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+  }
+
+  .create-container {
+    flex-direction: column;
+  }
+
+  .form-section {
+    margin-left: 0;
+    width: 100%;
+
+    padding: 20px;
+  }
+
+  .complaint-form {
+    padding: 25px;
+  }
 }
