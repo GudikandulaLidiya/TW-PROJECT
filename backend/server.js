@@ -1,20 +1,25 @@
 const express = require("express");
-const multer = require("multer");
 const cors = require("cors");
+const mongoose = require("mongoose");
+const multer = require("multer");
+
+const connectDB = require("./config/db");
+const Complaint = require("./models/Complaint");
 
 const app = express();
+
+connectDB();
 
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-let complaints = []; // ADD THIS
 
+// MULTER CONFIG
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
   },
-
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
   },
@@ -22,37 +27,40 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// GET complaints
-app.get("/complaints", (req, res) => {
+
+// GET ALL COMPLAINTS
+app.get("/complaints", async (req, res) => {
+  const complaints = await Complaint.find();
   res.json(complaints);
 });
 
-app.delete("/complaints/:id", (req, res) => {
-  const id = parseInt(req.params.id);
 
-  complaints = complaints.filter((c) => c.id !== id);
+// POST COMPLAINT
+app.post("/complaints", upload.single("image"), async (req, res) => {
+  try {
+    const newComplaint = new Complaint({
+      title: req.body.title,
+      location: req.body.location,
+      description: req.body.description,
+      date: req.body.date,
+      status: req.body.status,
+      image: req.file ? req.file.filename : null,
+    });
 
-  res.json({ message: "Deleted successfully" });
+    await newComplaint.save();
+
+    res.json({
+      message: "Complaint saved successfully",
+      data: newComplaint,
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-// POST complaint
-app.post("/complaints", upload.single("image"), (req, res) => {
-  const newComplaint = {
-    id: Date.now(),
-    title: req.body.title,
-    location: req.body.location,
-    date: req.body.date,
-    status: req.body.status,
-    image: `http://localhost:5000/uploads/${req.file.filename}`,
-  };
 
-  complaints.push(newComplaint);
-
-  res.json({
-    message: "Complaint Added Successfully",
-  });
-});
-
+// START SERVER
 app.listen(5000, () => {
-  console.log("Server running on port 5000");
+  console.log("Server Started");
 });
