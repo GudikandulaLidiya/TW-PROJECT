@@ -1,14 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./UserDashboard.css";
+import { getComplaints } from "./api";
 
 function UserDashboard() {
   const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = () => {
+    setLoading(true);
+
+    getComplaints()
+      .then((data) => {
+        setComplaints(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.log(err);
+        setComplaints([]);
+      })
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    fetch("http://localhost:5000/complaints")
-      .then((res) => res.json())
-      .then((data) => setComplaints(data));
+    fetchData();
   }, []);
 
   const pending = complaints.filter(
@@ -18,6 +32,8 @@ function UserDashboard() {
   const resolved = complaints.filter(
     (item) => item.status === "Resolved"
   ).length;
+
+  const recent = [...complaints].slice(-3).reverse();
 
   return (
     <div className="dashboard-container">
@@ -38,7 +54,11 @@ function UserDashboard() {
             <Link to="/">My Complaints</Link>
           </li>
 
-          <li>Logout</li>
+          <li>
+            <button onClick={() => alert("Logged out")}>
+              Logout
+            </button>
+          </li>
         </ul>
       </div>
 
@@ -46,34 +66,47 @@ function UserDashboard() {
       <div className="main-content">
         <h1>Welcome User 👋</h1>
 
-        <div className="cards">
-          <div className="card">
-            <h3>Total Complaints</h3>
-            <p>{complaints.length}</p>
-          </div>
+        {loading ? (
+          <p>Loading dashboard...</p>
+        ) : (
+          <>
+            {/* CARDS */}
+            <div className="cards">
+             <div className="card total">
+                <h3>Total Complaints</h3>
+                <p>{complaints.length}</p>
+              </div>
 
-          <div className="card">
-            <h3>Pending</h3>
-            <p>{pending}</p>
-          </div>
+              <div className="card pending-card">
+                <h3>Pending</h3>
+                <p>{pending}</p>
+              </div>
 
-          <div className="card">
-            <h3>Resolved</h3>
-            <p>{resolved}</p>
-          </div>
-        </div>
+              <div className="card resolved-card">
+                <h3>Resolved</h3>
+                <p>{resolved}</p>
+              </div>
+            </div>
 
-        <h2>Recent Complaints</h2>
+            {/* RECENT */}
+        
 
-        {complaints.map((item) => (
-          <div className="complaint-card" key={item.id}>
-            <h3>{item.title}</h3>
-
-            <p>{item.category}</p>
-
-            <p>{item.status}</p>
-          </div>
-        ))}
+            {recent.length === 0 ? (
+              <p>No complaints yet</p>
+            ) : (
+              recent.map((item, index) => (
+                <div
+                  className="complaint-card"
+                  key={item.id || item._id || index}
+                >
+                  <h3>{item.title}</h3>
+                  <p>{item.location}</p>
+                  <p>{item.status}</p>
+                </div>
+              ))
+            )}
+          </>
+        )}
       </div>
     </div>
   );

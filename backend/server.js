@@ -27,6 +27,14 @@ app.get("/complaints", (req, res) => {
   res.json(complaints);
 });
 
+app.delete("/complaints/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+
+  complaints = complaints.filter((c) => c.id !== id);
+
+  res.json({ message: "Deleted successfully" });
+});
+
 // POST complaint
 app.post("/complaints", upload.single("image"), (req, res) => {
   const newComplaint = {

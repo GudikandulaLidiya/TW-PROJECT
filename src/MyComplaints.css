@@ -1,19 +1,20 @@
-body {
+html, body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f7fb;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-/* MAIN LAYOUT */
-.container {
+/* LAYOUT */
+.complaints-container {
   display: flex;
 }
 
-/* SIDEBAR */
+/* SIDEBAR (SAFE) */
 .sidebar {
   width: 220px;
   min-height: 100vh;
-  background-color: white;
+  background: white;
   padding: 20px;
   border-right: 1px solid #ddd;
 }
@@ -34,133 +35,139 @@ body {
   border-radius: 8px;
 }
 
-/* hover only for non-active items */
 .sidebar li:hover {
-  background-color: #f1f5f9;
+  background: #f1f5f9;
 }
 
-/* IMPORTANT FIX: scoped active */
-.sidebar li.active {
-  background-color: #dbeafe;
-  font-weight: bold;
-}
-
-/* LINKS */
 .sidebar a {
   text-decoration: none;
-  color: black;
+  color: #111827;
   font-weight: bold;
   display: block;
 }
 
-/* 🔴 FIXED LOGOUT BUTTON (NO COLOR CHANGE EVER) */
-.logout-btn {
-  all: unset;
-  background-color: #ef4444;
-  color: white !important;
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 100%;
-  text-align: center;
-  display: block;
-  font-weight: bold;
-}
-
-.logout-btn:hover {
-  background-color: #dc2626;
-}
-
-/* MAIN SECTION */
-.main {
+/* MAIN */
+.complaints-main {
   flex: 1;
   padding: 30px;
 }
 
-.main h1 {
-  margin-bottom: 10px;
-  color: #111827;
-  font-size: 42px;
+/* TITLE */
+.complaints-main h1 {
   text-align: center;
+  color: #2563eb;
 }
 
-.main p {
-  font-size: 20px;
+.complaints-main p {
+  text-align: center;
   color: #6b7280;
-  text-align: center;
-  margin-top: 0;
 }
 
-/* CARDS */
-.card {
-  background-color: white;
-  padding: 15px;
-  border-radius: 12px;
+/* CARD */
+.complaint-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+  gap: 15px;
+
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 15px;
+  margin: 12px 0;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-left: 6px solid #3b82f6;
+
+  transition: 0.25s ease;
 }
 
-.card img {
-  width: 90px;
-  height: 90px;
-  border-radius: 10px;
+.complaint-card:hover {
+  transform: translateY(-4px);
+  background: #f9fafb;
+}
+
+/* IMAGE */
+.complaint-card img {
+  width: 85px;
+  height: 85px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
-.card-content {
+/* CONTENT */
+.complaint-content {
   flex: 1;
   margin-left: 20px;
 }
 
-.card-content h3 {
-  margin-bottom: 10px;
+.complaint-content h3 {
+  margin-bottom: 6px;
+  font-size: 18px;
+  color: #1f2937;
 }
 
-/* STATUS BADGES */
+.complaint-content p {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* RIGHT */
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* STATUS */
 .pending {
-  background-color: #fff3cd;
-  color: orange;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: bold;
-}
-
-.progress {
-  background-color: #dbeafe;
-  color: blue;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: bold;
+  background: #fff3cd;
+  color: #856404;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
 }
 
 .resolved {
-  background-color: #dcfce7;
-  color: green;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: bold;
+  background: #d4edda;
+  color: #155724;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
 }
 
-/* RIGHT SECTION */
-.right-section {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+.progress {
+  background: #cce5ff;
+  color: #004085;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
 }
 
+/* BUTTONS */
 .arrow-btn {
   border: none;
-  background-color: #2563eb;
+  background: #2563eb;
   color: white;
   padding: 8px 12px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
 }
 
 .arrow-btn:hover {
-  background-color: #1d4ed8;
+  background: #1d4ed8;
+}
+
+.delete-btn {
+  border: none;
+  background: #ef4444;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
 }

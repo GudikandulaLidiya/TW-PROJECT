@@ -1,40 +1,57 @@
 import React, { useState } from "react";
 import "./CreateComplaint.css";
-
+import { createComplaint } from "./api";
 
 function CreateComplaint() {
-  const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [image, setImage] = useState(null);
+  const [form, setForm] = useState({
+    title: "",
+    location: "",
+    date: "",
+    image: null,
+  });
+
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "image" ? files[0] : value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+    setMessage("");
+
     const formData = new FormData();
 
-    formData.append("title", title);
-    formData.append("location", location);
-    formData.append("date", date);
+    formData.append("title", form.title);
+    formData.append("location", form.location);
+    formData.append("date", form.date);
     formData.append("status", "Pending");
-    formData.append("image", image);
+    formData.append("image", form.image);
 
     try {
-      const response = await fetch("http://localhost:5000/complaints", {
-        method: "POST",
-        body: formData,
+      const response = await createComplaint(formData);
+
+      setMessage(response.message || "Complaint submitted successfully ✅");
+
+      setForm({
+        title: "",
+        location: "",
+        date: "",
+        image: null,
       });
-
-      const data = await response.json();
-
-      alert(data.message);
-
-      setTitle("");
-      setLocation("");
-      setDate("");
-      setImage(null);
     } catch (error) {
       console.log(error);
+      setMessage("Something went wrong ❌ Please try again");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,35 +62,44 @@ function CreateComplaint() {
       <form onSubmit={handleSubmit} className="complaint-form">
         <input
           type="text"
+          name="title"
           placeholder="Complaint Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={form.title}
+          onChange={handleChange}
           required
         />
 
         <input
           type="text"
+          name="location"
           placeholder="Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          value={form.location}
+          onChange={handleChange}
           required
         />
 
         <input
           type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          name="date"
+          value={form.date}
+          onChange={handleChange}
           required
         />
 
         <input
           type="file"
-          onChange={(e) => setImage(e.target.files[0])}
+          name="image"
+          onChange={handleChange}
           required
         />
 
-        <button type="submit">Submit Complaint</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Submitting..." : "Submit Complaint"}
+        </button>
       </form>
+
+      {/* MESSAGE DISPLAY */}
+      {message && <p className="message">{message}</p>}
     </div>
   );
 }

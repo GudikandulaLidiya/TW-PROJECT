@@ -5,18 +5,40 @@ import { getComplaints } from "./api";
 
 function MyComplaints() {
   const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchData = () => {
+    setLoading(true);
+
     getComplaints()
       .then((data) => {
-        console.log(data);
-        setComplaints(data);
+        setComplaints(Array.isArray(data) ? data : []);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setComplaints([]);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
+  const handleDelete = async (id) => {
+  try {
+    await fetch(`http://localhost:5000/complaints/${id}`, {
+      method: "DELETE",
+    });
+
+    setComplaints((prev) => prev.filter((c) => c.id !== id));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
   return (
-    <div className="container">
+  <div className="complaints-container">
       {/* Sidebar */}
       <div className="sidebar">
         <h2>CivicTrack</h2>
@@ -37,9 +59,7 @@ function MyComplaints() {
           <li>
             <button
               className="logout-btn"
-              onClick={() => {
-                alert("Logged out successfully");
-              }}
+              onClick={() => alert("Logged out successfully")}
             >
               Logout
             </button>
@@ -48,15 +68,18 @@ function MyComplaints() {
       </div>
 
       {/* Main Content */}
-      <div className="main">
+    <div className="complaints-main">
         <h1>My Complaints</h1>
         <p>Track your complaints status</p>
 
-        {complaints.length === 0 ? (
+        {/* LOADING STATE */}
+        {loading ? (
+          <p>Loading complaints...</p>
+        ) : complaints.length === 0 ? (
           <p>No complaints found</p>
         ) : (
           complaints.map((item, index) => (
-            <div className="card" key={item._id || item.id || index}>
+<div className="complaint-card" key={item._id || item.id || index}>
               <img
                 src={
                   item.image ||
@@ -65,11 +88,9 @@ function MyComplaints() {
                 alt="complaint"
               />
 
-              <div className="card-content">
+<div className="complaint-content">
                 <h3>{item.title}</h3>
-
                 <p>📍 {item.location}</p>
-
                 <p>📅 {item.date}</p>
               </div>
 
@@ -88,12 +109,16 @@ function MyComplaints() {
 
                 <button
                   className="arrow-btn"
-                  onClick={() => {
-                    alert("Complaint Details");
-                  }}
+                  onClick={() => alert("Complaint Details")}
                 >
                   ➜
                 </button>
+                <button
+  className="delete-btn"
+  onClick={() => handleDelete(item.id)}
+>
+  🗑
+</button>
               </div>
             </div>
           ))
