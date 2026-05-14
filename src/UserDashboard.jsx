@@ -51,24 +51,38 @@ function UserDashboard() {
         <h2>CivicTrack</h2>
 
         <ul>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
 
-          <li>
-            <Link to="/create">Create Complaint</Link>
-          </li>
+  <li>
+    <Link to="/">Dashboard</Link>
+  </li>
 
-          <li>
-            <Link to="/">My Complaints</Link>
-          </li>
+  <li>
+    <Link to="/create">
+      Create Complaint
+    </Link>
+  </li>
 
-          <li>
-            <button onClick={() => alert("Logged out")}>
-              Logout
-            </button>
-          </li>
-        </ul>
+  <li>
+    <Link to="/mycomplaints">
+      My Complaints
+    </Link>
+  </li>
+
+ 
+
+  <li>
+    <Link to="/admin">
+      Admin Dashboard
+    </Link>
+  </li>
+
+  <li>
+    <button onClick={() => alert("Logged out")}>
+      Logout
+    </button>
+  </li>
+
+</ul>
       </div>
 
       {/* MAIN */}

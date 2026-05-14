@@ -43,28 +43,39 @@ function MyComplaints() {
       <div className="sidebar">
         <h2>CivicTrack</h2>
 
-        <ul>
-          <li>
-            <Link to="/admin">Dashboard</Link>
-          </li>
+      <ul>
 
-          <li>
-            <Link to="/create">Create Complaint</Link>
-          </li>
+  <li>
+    <Link to="/">Dashboard</Link>
+  </li>
 
-          <li className="active">
-            <Link to="/">My Complaints</Link>
-          </li>
+  <li>
+    <Link to="/create">
+      Create Complaint
+    </Link>
+  </li>
 
-          <li>
-            <button
-              className="logout-btn"
-              onClick={() => alert("Logged out successfully")}
-            >
-              Logout
-            </button>
-          </li>
-        </ul>
+  <li>
+    <Link to="/mycomplaints">
+      My Complaints
+    </Link>
+  </li>
+
+  
+
+  <li>
+    <Link to="/admin">
+      Admin Dashboard
+    </Link>
+  </li>
+
+  <li>
+    <button onClick={() => alert("Logged out")}>
+      Logout
+    </button>
+  </li>
+
+</ul>
       </div>
 
       {/* Main Content */}
