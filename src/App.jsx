@@ -1,30 +1,30 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Login from "./pages/Login";
 import UserDashboard from "./UserDashboard";
 import MyComplaints from "./MyComplaints";
 import CreateComplaint from "./CreateComplaint";
 import AdminDashboard from "./AdminDashboard";
-import AllComplaints from "./AllComplaints";
-import Login from "./pages/Login";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* LOGIN */}
-        <Route path="/login" element={<Login />} />
+        {/* LOGIN PAGE */}
+       <Route path="/" element={<UserDashboard />} />
 
         {/* USER DASHBOARD */}
-        <Route path="/" element={<UserDashboard />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
 
-        {/* USER FEATURES */}
-        <Route path="/mycomplaints" element={<MyComplaints />} />
+        {/* CREATE COMPLAINT */}
         <Route path="/create" element={<CreateComplaint />} />
+
+        {/* MY COMPLAINTS */}
+        <Route path="/mycomplaints" element={<MyComplaints />} />
 
         {/* ADMIN */}
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/complaints" element={<AllComplaints />} />
 
       </Routes>
     </BrowserRouter>

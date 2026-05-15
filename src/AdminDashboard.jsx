@@ -26,14 +26,14 @@ function AdminDashboard() {
   // NAVIGATION  
   const navigate = useNavigate();
 
-  const handleDashboard = () => navigate("/");
+  const handleDashboard = () => navigate("/dashboard");
   const handleComplaints = () => navigate("/complaints");
   const handleUsers = () => navigate("/users");
   const handleReports = () => navigate("/reports");
   const handleSettings = () => navigate("/settings");
   const handleNotifications = () => navigate("/notifications");
   const handleSupport = () => navigate("/support");
-  const handleLogout = () => navigate("/");
+  const handleLogout = () => navigate("/dashboard");
 
   // COMPLAINTS DATA
 

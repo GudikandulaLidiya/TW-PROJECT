@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./UserDashboard.css";
-import { getComplaints } from "./api";
+import { getMyComplaints } from "./api";
 
 function UserDashboard() {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setLoading(true);
 
-    getComplaints()
-      .then((data) => {
-        setComplaints(Array.isArray(data) ? data : []);
-      })
-      .catch((err) => {
-        console.log(err);
-        setComplaints([]);
-      })
-      .finally(() => setLoading(false));
+    try {
+      const data = await getMyComplaints();
+      console.log(data);
+      console.log("Dashboard Data:", data);
+
+      setComplaints(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.log(err);
+      setComplaints([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -34,14 +37,14 @@ function UserDashboard() {
   ).length;
 
   const processing = complaints.filter(
-  (item) =>
-    item.status === "In Progress" ||
-    item.status === "Processing"
-).length;
+    (item) =>
+      item.status === "In Progress" ||
+      item.status === "Processing"
+  ).length;
 
   const recent = [...complaints]
-  .sort((a, b) => new Date(b.date) - new Date(a.date))
-  .slice(0, 5);
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
 
   return (
     <div className="dashboard-container">
@@ -51,41 +54,26 @@ function UserDashboard() {
         <h2>CivicTrack</h2>
 
         <ul>
+          <li><Link to="/dashboard">Dashboard</Link></li>
+          <li><Link to="/create">Create Complaint</Link></li>
+          <li><Link to="/mycomplaints">My Complaints</Link></li>
+          <li><Link to="/admin">Admin Dashboard</Link></li>
 
-  <li>
-    <Link to="/">Dashboard</Link>
-  </li>
-
-  <li>
-    <Link to="/create">
-      Create Complaint
-    </Link>
-  </li>
-
-  <li>
-    <Link to="/mycomplaints">
-      My Complaints
-    </Link>
-  </li>
-
- 
-
-  <li>
-    <Link to="/admin">
-      Admin Dashboard
-    </Link>
-  </li>
-
-  <li>
-    <button onClick={() => alert("Logged out")}>
-      Logout
-    </button>
-  </li>
-
-</ul>
+          <li>
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user");
+                window.location.href = "/login";
+              }}
+            >
+              Logout
+            </button>
+          </li>
+        </ul>
       </div>
 
-      {/* MAIN */}
+      {/* MAIN CONTENT */}
       <div className="main-content">
 
         <div className="welcome-section">
@@ -97,7 +85,7 @@ function UserDashboard() {
           <p className="loading-text">Loading dashboard...</p>
         ) : (
           <>
-            {/* STATS CARDS */}
+            {/* STATS */}
             <div className="cards">
 
               <div className="card total">
@@ -116,9 +104,9 @@ function UserDashboard() {
               </div>
 
               <div className="card progress-card">
-  <h3>Processing</h3>
-  <p>{processing}</p>
-</div>
+                <h3>Processing</h3>
+                <p>{processing}</p>
+              </div>
 
             </div>
 
@@ -134,20 +122,17 @@ function UserDashboard() {
                 recent.map((item, index) => (
                   <div
                     className="complaint-card"
-                    key={item.id || item._id || index}
+                    key={item._id || index}
                   >
-
                     <div className="complaint-card-info">
-  <h3>{item.title}</h3>
-
-  <p>
-    📍 {item.location || "Unknown Location"}
-  </p>
-
-  <p>
-    📅 {item.date || "No Date"}
-  </p>
-</div>
+                      <h3>{item.title}</h3>
+                      <p>📍 {item.location || "Unknown Location"}</p>
+                    <p>
+  📅 {item.date
+    ? new Date(item.date).toLocaleDateString()
+    : "No Date"}
+</p>
+                    </div>
 
                     <div
                       className={`status-badge ${
@@ -160,11 +145,11 @@ function UserDashboard() {
                     >
                       {item.status}
                     </div>
-
                   </div>
                 ))
               )}
             </div>
+
           </>
         )}
       </div>

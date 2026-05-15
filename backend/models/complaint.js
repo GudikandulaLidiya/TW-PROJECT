@@ -1,20 +1,43 @@
 const mongoose = require("mongoose");
 
 const complaintSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  location: String,
+  title: {
+    type: String,
+  },
+
+  description: {
+    type: String,
+  },
+
+  location: {
+    type: String,
+  },
+
+  category: {
+    type: String,
+  },
+
   status: {
     type: String,
     default: "Pending",
   },
-  image: String,
 
+  image: {
+    type: String,
+  },
 
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
+  },
+
+  // DATE FIELD
+  date: {
+    type: Date,
+    default: Date.now,
   },
 });
 
-module.exports = mongoose.model("Complaint", complaintSchema);
+module.exports = mongoose.model(
+  "Complaint",
+  complaintSchema
+);

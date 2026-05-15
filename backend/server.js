@@ -93,31 +93,44 @@ app.post("/login", async (req, res) => {
 
 
 // ---------------- CREATE COMPLAINT (TOKEN) ----------------
-app.post("/complaints", verifyToken, upload.single("image"), async (req, res) => {
-  try {
-    const newComplaint = new Complaint({
-      title: req.body.title,
-      location: req.body.location,
-      description: req.body.description,
-      category: req.body.category,
-      date: req.body.date,
-      status: "Pending",
-      image: req.file ? req.file.filename : null,
+app.post(
+  "/complaints",
+  verifyToken,
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const newComplaint = new Complaint({
+        title: req.body.title,
+        location: req.body.location,
+        description: req.body.description,
+        category: req.body.category,
 
-      userId: req.user.id,
-    });
+        // AUTO DATE
+        date: new Date(),
 
-    await newComplaint.save();
+        status: "Pending",
 
-    res.json({
-      message: "Complaint created successfully",
-      data: newComplaint,
-    });
+        image: req.file
+          ? req.file.filename
+          : null,
 
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+        userId: req.user.id,
+      });
+
+      await newComplaint.save();
+
+      res.json({
+        message: "Complaint created successfully",
+        data: newComplaint,
+      });
+
+    } catch (err) {
+      res.status(500).json({
+        error: err.message,
+      });
+    }
   }
-});
+);
 
 
 // ---------------- GET MY COMPLAINTS ----------------
