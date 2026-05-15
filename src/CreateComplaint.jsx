@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./CreateComplaint.css";
 import { createComplaint } from "./api";
 
 function CreateComplaint() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     title: "",
     location: "",
@@ -31,7 +33,6 @@ function CreateComplaint() {
     setMessage("");
 
     const formData = new FormData();
-
     formData.append("title", form.title);
     formData.append("location", form.location);
     formData.append("description", form.description);
@@ -42,10 +43,7 @@ function CreateComplaint() {
     try {
       const response = await createComplaint(formData);
 
-      setMessage(
-        response.message ||
-          "Complaint submitted successfully ✅"
-      );
+      setMessage(response.message || "Complaint submitted successfully ✅");
 
       setForm({
         title: "",
@@ -54,12 +52,21 @@ function CreateComplaint() {
         date: "",
         image: null,
       });
+
+      // ✅ IMPORTANT FIX: go back to dashboard
+      navigate("/dashboard");
+
     } catch (error) {
       console.log(error);
       setMessage("Something went wrong ❌");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
   };
 
   return (
@@ -70,47 +77,23 @@ function CreateComplaint() {
         <h2>CivicTrack</h2>
 
         <ul>
+          <li><Link to="/dashboard">Dashboard</Link></li>
+          <li><Link to="/create">Create Complaint</Link></li>
+          <li><Link to="/mycomplaints">My Complaints</Link></li>
+          <li><Link to="/admin">Admin Dashboard</Link></li>
 
-  <li>
-    <Link to="/">Dashboard</Link>
-  </li>
-
-  <li>
-    <Link to="/create">
-      Create Complaint
-    </Link>
-  </li>
-
-  <li>
-    <Link to="/mycomplaints">
-      My Complaints
-    </Link>
-  </li>
-
- 
-
-  <li>
-    <Link to="/admin">
-      Admin Dashboard
-    </Link>
-  </li>
-
-  <li>
-    <button>
-      Logout
-    </button>
-  </li>
-
-</ul>
+          <li>
+            <button onClick={handleLogout}>
+              Logout
+            </button>
+          </li>
+        </ul>
       </div>
 
       {/* FORM SECTION */}
       <div className="form-section">
 
-        <form
-          onSubmit={handleSubmit}
-          className="complaint-form"
-        >
+        <form onSubmit={handleSubmit} className="complaint-form">
 
           <h1>Create Complaint</h1>
 
@@ -156,15 +139,10 @@ function CreateComplaint() {
           />
 
           <button type="submit" disabled={loading}>
-            {loading
-              ? "Submitting..."
-              : "Submit Complaint"}
+            {loading ? "Submitting..." : "Submit Complaint"}
           </button>
 
-          {message && (
-            <p className="message">{message}</p>
-          )}
-
+          {message && <p className="message">{message}</p>}
         </form>
       </div>
     </div>

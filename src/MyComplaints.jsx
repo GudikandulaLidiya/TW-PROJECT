@@ -67,15 +67,14 @@ function MyComplaints() {
           </li>
 
           <li>
-            <button
-              onClick={() => {
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                window.location.href = "/login";
-              }}
-            >
-              Logout
-            </button>
+       <button
+  onClick={() => {
+    localStorage.clear();
+    window.location.href = "/";
+  }}
+>
+  Logout
+</button>
           </li>
         </ul>
       </div>

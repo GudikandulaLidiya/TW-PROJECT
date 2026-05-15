@@ -1,20 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./UserDashboard.css";
 import { getMyComplaints } from "./api";
 
 function UserDashboard() {
+  const navigate = useNavigate();
+
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("All");
+  const [selectedComplaint, setSelectedComplaint] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const complaintsPerPage = 5;
+
+  // feedback state (persistent)
+  const [uploadedFeedback, setUploadedFeedback] = useState(() => {
+    const saved = localStorage.getItem("uploadedFeedback");
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // FETCH DATA
   const fetchData = async () => {
     setLoading(true);
 
     try {
       const data = await getMyComplaints();
-      console.log(data);
-      console.log("Dashboard Data:", data);
-
       setComplaints(Array.isArray(data) ? data : []);
     } catch (err) {
       console.log(err);
@@ -28,23 +41,70 @@ function UserDashboard() {
     fetchData();
   }, []);
 
-  const pending = complaints.filter(
-    (item) => item.status === "Pending"
-  ).length;
+  // FEEDBACK UPLOAD
+  const handleFeedbackUpload = async (file, complaintId) => {
+    if (!file) return;
 
-  const resolved = complaints.filter(
-    (item) => item.status === "Resolved"
-  ).length;
+    try {
+      alert("Image uploaded successfully ✅");
+
+      setUploadedFeedback((prev) => {
+        const updated = new Set(prev);
+        updated.add(complaintId);
+
+        localStorage.setItem(
+          "uploadedFeedback",
+          JSON.stringify([...updated])
+        );
+
+        return updated;
+      });
+    } catch (err) {
+      console.log(err);
+      alert("Upload failed ❌");
+    }
+  };
+
+  // COUNTS
+  const pending = complaints.filter((item) => item.status === "Pending").length;
+  const resolved = complaints.filter((item) => item.status === "Resolved").length;
 
   const processing = complaints.filter(
-    (item) =>
-      item.status === "In Progress" ||
-      item.status === "Processing"
+    (item) => item.status === "In Progress" || item.status === "Processing"
   ).length;
 
-  const recent = [...complaints]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5);
+  // FILTER
+  let filteredComplaints = complaints;
+
+  if (filter === "Pending") {
+    filteredComplaints = complaints.filter((item) => item.status === "Pending");
+  }
+
+  if (filter === "Resolved") {
+    filteredComplaints = complaints.filter((item) => item.status === "Resolved");
+  }
+
+  if (filter === "Processing") {
+    filteredComplaints = complaints.filter(
+      (item) => item.status === "In Progress" || item.status === "Processing"
+    );
+  }
+
+  // SORT
+  filteredComplaints = [...filteredComplaints].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+
+  // PAGINATION
+  const indexOfLastComplaint = currentPage * complaintsPerPage;
+  const indexOfFirstComplaint = indexOfLastComplaint - complaintsPerPage;
+
+  const currentComplaints = filteredComplaints.slice(
+    indexOfFirstComplaint,
+    indexOfLastComplaint
+  );
+
+  const totalPages = Math.ceil(filteredComplaints.length / complaintsPerPage);
 
   return (
     <div className="dashboard-container">
@@ -64,7 +124,7 @@ function UserDashboard() {
               onClick={() => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
-                window.location.href = "/login";
+                navigate("/");
               }}
             >
               Logout
@@ -73,11 +133,11 @@ function UserDashboard() {
         </ul>
       </div>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
       <div className="main-content">
 
         <div className="welcome-section">
-          <h1>Welcome User 👋</h1>
+          <h1>Welcome, {user?.name || user?.username || "User"} 👋</h1>
           <p>Here’s what’s happening in your community</p>
         </div>
 
@@ -85,74 +145,172 @@ function UserDashboard() {
           <p className="loading-text">Loading dashboard...</p>
         ) : (
           <>
-            {/* STATS */}
+            {/* CARDS */}
             <div className="cards">
 
-              <div className="card total">
-                <h3>Total Complaints</h3>
+              <div className="card total" onClick={() => { setFilter("All"); setCurrentPage(1); }}>
+                📋 <h3>Total Complaints</h3>
                 <p>{complaints.length}</p>
               </div>
 
-              <div className="card pending-card">
-                <h3>Pending</h3>
+              <div className="card pending-card" onClick={() => { setFilter("Pending"); setCurrentPage(1); }}>
+                🕒 <h3>Pending</h3>
                 <p>{pending}</p>
               </div>
 
-              <div className="card resolved-card">
-                <h3>Resolved</h3>
-                <p>{resolved}</p>
-              </div>
-
-              <div className="card progress-card">
-                <h3>Processing</h3>
+              <div className="card progress-card" onClick={() => { setFilter("Processing"); setCurrentPage(1); }}>
+                ⏳ <h3>In Progress</h3>
                 <p>{processing}</p>
               </div>
 
+              <div className="card resolved-card" onClick={() => { setFilter("Resolved"); setCurrentPage(1); }}>
+                ✔ <h3>Resolved</h3>
+                <p>{resolved}</p>
+              </div>
+
             </div>
 
-            {/* RECENT */}
-            <div className="recent-section">
-              <h2>Recent Complaints</h2>
+            {/* TABLE */}
+            <div className="table-section">
+              <div className="table-header">
+                <h2>Recent Complaints</h2>
+                <span className="filter-text">{filter}</span>
+              </div>
 
-              {recent.length === 0 ? (
-                <div className="empty-box">
-                  No complaints yet
-                </div>
+              {currentComplaints.length === 0 ? (
+                <div className="empty-box">No complaints found</div>
               ) : (
-                recent.map((item, index) => (
-                  <div
-                    className="complaint-card"
-                    key={item._id || index}
-                  >
-                    <div className="complaint-card-info">
-                      <h3>{item.title}</h3>
-                      <p>📍 {item.location || "Unknown Location"}</p>
-                    <p>
-  📅 {item.date
-    ? new Date(item.date).toLocaleDateString()
-    : "No Date"}
-</p>
-                    </div>
+                <>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th className="action-column">Action</th>
+                        <th className="view-column">View</th>
+                      </tr>
+                    </thead>
 
-                    <div
-                      className={`status-badge ${
-                        item.status === "Resolved"
-                          ? "resolved-status"
-                          : item.status === "Pending"
-                          ? "pending-status"
-                          : "progress-status"
-                      }`}
+                    <tbody>
+                      {currentComplaints.map((item, index) => {
+                        const isUploaded = uploadedFeedback.has(item._id);
+
+                        return (
+                          <tr key={item._id || index}>
+                            <td>{item.title}</td>
+
+                            <td>
+                              <span className={`status-badge ${
+                                item.status === "Resolved"
+                                  ? "resolved-status"
+                                  : item.status === "Pending"
+                                  ? "pending-status"
+                                  : "progress-status"
+                              }`}>
+                                {item.status}
+                              </span>
+                            </td>
+
+                            <td>{item.location}</td>
+
+                            <td>
+                              {item.date
+                                ? new Date(item.date).toLocaleDateString()
+                                : "No Date"}
+                            </td>
+
+                            {/* FEEDBACK */}
+                            <td className="action-column">
+                              <label htmlFor={`feedback-${index}`}>
+                                <div
+                                  className="feedback-btn"
+                                  style={{
+                                    opacity: isUploaded ? 0.5 : 1,
+                                    pointerEvents: isUploaded ? "none" : "auto",
+                                    cursor: isUploaded ? "not-allowed" : "pointer",
+                                  }}
+                                >
+                                  {isUploaded ? "✔ Uploaded" : "📤 Feedback"}
+                                </div>
+                              </label>
+
+                              <input
+                                id={`feedback-${index}`}
+                                type="file"
+                                hidden
+                                disabled={isUploaded}
+                                onChange={(e) =>
+                                  handleFeedbackUpload(
+                                    e.target.files[0],
+                                    item._id
+                                  )
+                                }
+                              />
+                            </td>
+
+                            {/* VIEW */}
+                            <td className="view-column">
+                              <button
+                                className="view-btn"
+                                onClick={() => setSelectedComplaint(item)}
+                              >
+                                →
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+
+                  {/* PAGINATION */}
+                  <div className="pagination">
+                    <button
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(currentPage - 1)}
                     >
-                      {item.status}
-                    </div>
+                      Prev
+                    </button>
+
+                    <span>
+                      {totalPages === 0 ? 0 : currentPage} / {totalPages}
+                    </span>
+
+                    <button
+                      disabled={currentPage >= totalPages || totalPages === 0}
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                      Next
+                    </button>
                   </div>
-                ))
+                </>
               )}
             </div>
-
           </>
         )}
       </div>
+
+      {/* MODAL */}
+      {selectedComplaint && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <h2>{selectedComplaint.title}</h2>
+            <p><strong>Description:</strong> {selectedComplaint.description}</p>
+            <p><strong>Status:</strong> {selectedComplaint.status}</p>
+            <p><strong>Location:</strong> {selectedComplaint.location}</p>
+
+            <button
+              className="close-btn"
+              onClick={() => setSelectedComplaint(null)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

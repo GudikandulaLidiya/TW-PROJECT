@@ -35,7 +35,12 @@ const complaintSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  feedbackImage: {
+  type: String,
+  default: null,
+}
 });
+
 
 module.exports = mongoose.model(
   "Complaint",

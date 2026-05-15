@@ -180,3 +180,27 @@ app.put("/complaints/:id", async (req, res) => {
 app.listen(5000, () => {
   console.log("Server Started On Port 5000");
 });
+
+app.put(
+  "/complaints/feedback/:id",
+  verifyToken,
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const updated = await Complaint.findByIdAndUpdate(
+        req.params.id,
+        {
+          feedbackImage: req.file ? req.file.filename : null,
+        },
+        { new: true }
+      );
+
+      res.json({
+        message: "Feedback submitted successfully",
+        data: updated,
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);

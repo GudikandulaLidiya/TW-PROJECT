@@ -59,3 +59,19 @@ export const getMyComplaints = async () => {
 
   return await res.json();
 };
+export const submitFeedback = async (id, formData) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(
+    `http://localhost:5000/complaints/feedback/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    }
+  );
+
+  return await res.json();
+};
