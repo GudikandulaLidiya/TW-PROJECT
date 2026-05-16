@@ -81,7 +81,19 @@ function CreateComplaint() {
           <li><Link to="/create">Create Complaint</Link></li>
           <li><Link to="/mycomplaints">My Complaints</Link></li>
           <li><Link to="/admin">Admin Dashboard</Link></li>
+<div className="sidebar-help">
 
+  <h3>Need Help?</h3>
+
+  <p>
+    Contact support for assistance
+  </p>
+
+  <button>
+    Support
+  </button>
+
+</div>
           <li>
             <button onClick={handleLogout}>
               Logout

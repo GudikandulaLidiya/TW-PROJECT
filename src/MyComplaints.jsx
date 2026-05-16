@@ -65,7 +65,19 @@ function MyComplaints() {
           <li>
             <Link to="/admin">Admin Dashboard</Link>
           </li>
+<div className="sidebar-help">
 
+  <h3>Need Help?</h3>
+
+  <p>
+    Contact support for assistance
+  </p>
+
+  <button>
+    Support
+  </button>
+
+</div>
           <li>
        <button
   onClick={() => {

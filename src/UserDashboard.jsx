@@ -42,28 +42,59 @@ function UserDashboard() {
   }, []);
 
   // FEEDBACK UPLOAD
-  const handleFeedbackUpload = async (file, complaintId) => {
-    if (!file) return;
+const handleFeedbackUpload = async (file, complaintId) => {
+  if (!file) return;
 
-    try {
-      alert("Image uploaded successfully ✅");
+  try {
+    const formData = new FormData();
 
-      setUploadedFeedback((prev) => {
-        const updated = new Set(prev);
-        updated.add(complaintId);
+    formData.append("image", file);
 
-        localStorage.setItem(
-          "uploadedFeedback",
-          JSON.stringify([...updated])
-        );
+    const response = await fetch(
+      `http://localhost:5000/complaints/feedback/${complaintId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      }
+    );
 
-        return updated;
-      });
-    } catch (err) {
-      console.log(err);
-      alert("Upload failed ❌");
-    }
-  };
+    const data = await response.json();
+
+    alert("Feedback uploaded successfully ✅");
+
+    // update complaints instantly
+    setComplaints((prev) =>
+      prev.map((item) =>
+        item._id === complaintId
+          ? {
+              ...item,
+              feedbackImage: data.data.feedbackImage,
+            }
+          : item
+      )
+    );
+
+    setUploadedFeedback((prev) => {
+      const updated = new Set(prev);
+
+      updated.add(complaintId);
+
+      localStorage.setItem(
+        "uploadedFeedback",
+        JSON.stringify([...updated])
+      );
+
+      return updated;
+    });
+
+  } catch (err) {
+    console.log(err);
+    alert("Upload failed ❌");
+  }
+};
 
   // COUNTS
   const pending = complaints.filter((item) => item.status === "Pending").length;
@@ -118,6 +149,23 @@ function UserDashboard() {
           <li><Link to="/create">Create Complaint</Link></li>
           <li><Link to="/mycomplaints">My Complaints</Link></li>
           <li><Link to="/admin">Admin Dashboard</Link></li>
+          
+        
+
+        <div className="sidebar-help">
+
+  <h3>Need Help?</h3>
+
+  <p>
+    Contact support for assistance
+  </p>
+
+  <button>
+    Support
+  </button>
+
+</div>
+
 
           <li>
             <button
@@ -140,6 +188,7 @@ function UserDashboard() {
           <h1>Welcome, {user?.name || user?.username || "User"} 👋</h1>
           <p>Here’s what’s happening in your community</p>
         </div>
+        
 
         {loading ? (
           <p className="loading-text">Loading dashboard...</p>
@@ -295,8 +344,63 @@ function UserDashboard() {
       {/* MODAL */}
       {selectedComplaint && (
         <div className="modal-overlay">
+                {selectedComplaint && console.log(selectedComplaint.image)}
+
           <div className="modal-box">
             <h2>{selectedComplaint.title}</h2>
+                  
+          {/* SHOW ONLY ONE IMAGE */}
+{selectedComplaint.feedbackImage ? (
+
+  <>
+    <h3 style={{ marginTop: "15px" }}>
+      Feedback Image
+    </h3>
+
+    <img
+      src={
+        selectedComplaint.feedbackImage.startsWith("http")
+          ? selectedComplaint.feedbackImage
+          : `http://localhost:5000/uploads/${selectedComplaint.feedbackImage}`
+      }
+      alt="feedback"
+      style={{
+        width: "250px",
+        maxHeight: "180px",
+        objectFit: "cover",
+        borderRadius: "10px",
+        marginBottom: "15px",
+      }}
+    />
+  </>
+
+) : selectedComplaint.image && (
+
+  <>
+    <h3 style={{ marginTop: "15px" }}>
+      Complaint Image
+    </h3>
+
+    <img
+      src={
+        selectedComplaint.image.startsWith("http")
+          ? selectedComplaint.image
+          : `http://localhost:5000/uploads/${selectedComplaint.image}`
+      }
+      alt="complaint"
+      style={{
+        width: "250px",
+        maxHeight: "180px",
+        objectFit: "cover",
+        borderRadius: "10px",
+        marginBottom: "15px",
+      }}
+    />
+  </>
+)}
+
+
+<p><strong>Description:</strong> {selectedComplaint.description}</p>
             <p><strong>Description:</strong> {selectedComplaint.description}</p>
             <p><strong>Status:</strong> {selectedComplaint.status}</p>
             <p><strong>Location:</strong> {selectedComplaint.location}</p>

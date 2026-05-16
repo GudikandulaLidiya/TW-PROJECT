@@ -109,10 +109,8 @@ app.post(
         date: new Date(),
 
         status: "Pending",
-
-        image: req.file
-          ? req.file.filename
-          : null,
+image: req.file ? req.file.filename : null,
+        
 
         userId: req.user.id,
       });
@@ -190,7 +188,9 @@ app.put(
       const updated = await Complaint.findByIdAndUpdate(
         req.params.id,
         {
-          feedbackImage: req.file ? req.file.filename : null,
+ feedbackImage: req.file
+  ? `http://localhost:5000/uploads/${req.file.filename}`
+  : null,
         },
         { new: true }
       );

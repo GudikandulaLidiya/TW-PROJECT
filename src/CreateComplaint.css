@@ -12,44 +12,61 @@ body {
 }
 
 /* SIDEBAR */
+/* SIDEBAR */
 .sidebar {
   width: 240px;
-  background: white;
-  border-right: 1px solid #e2e8f0;
-
-  padding: 20px;
+  height: 100vh;
+  background: #071b5a;
 
   position: fixed;
   top: 0;
   left: 0;
 
-  height: 100vh;
+  padding: 20px;
+
   box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start;
+
+  overflow-y: auto;
 }
 
+/* LOGO */
 .sidebar h2 {
-  color: #2563eb;
-  margin-bottom: 40px;
-  font-size: 28px;
-  font-weight: 700;
+  color: #2f6bff;
+
+  font-size: 38px;
+
+  margin: 0;
+  padding: 0;
+
+  text-align: center;
+
+  margin-bottom: 35px;
 }
 
+/* MENU */
 .sidebar ul {
   list-style: none;
+
   padding: 0;
   margin: 0;
 }
 
-.sidebar li {
+/* MENU ITEM */
+.sidebar ul li {
   margin-bottom: 18px;
 }
 
+/* LINKS + BUTTON */
 .sidebar a,
 .sidebar button {
-  display: flex;
-  align-items: center;
-
   width: 100%;
+
+  display: block;
 
   padding: 14px 16px;
 
@@ -60,20 +77,26 @@ body {
 
   text-decoration: none;
 
-  color: #334155;
-  font-size: 15px;
+  color: white;
+
+  font-size: 18px;
   font-weight: 500;
 
   cursor: pointer;
 
   transition: 0.3s;
+
+  text-align: left;
+
   box-sizing: border-box;
 }
 
+/* HOVER */
 .sidebar a:hover,
 .sidebar button:hover {
-  background: #eff6ff;
-  color: #2563eb;
+  background: rgba(255,255,255,0.12);
+
+  color: white;
 }
 
 /* FORM AREA */
@@ -230,7 +253,7 @@ input[type="file"] {
 }
 
 /* MOBILE */
-@media (max-width: 768px) {
+@media (max-width: 682px) {
 
   .sidebar {
     position: relative;
