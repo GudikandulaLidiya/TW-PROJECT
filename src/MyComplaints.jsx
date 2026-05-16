@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./MyComplaints.css";
 import { Link } from "react-router-dom";
 import { getMyComplaints } from "./api";
+import { deleteComplaint } from "./api";
 
 function MyComplaints() {
   const [complaints, setComplaints] = useState([]);
@@ -29,18 +30,32 @@ function MyComplaints() {
   }, []);
 
   // DELETE COMPLAINT
-  const handleDelete = async (id) => {
-    try {
-      await fetch(`http://localhost:5000/complaints/${id}`, {
-        method: "DELETE",
-      });
+ // DELETE COMPLAINT
+const handleDelete = async (id) => {
 
-      // remove from UI
-      setComplaints((prev) => prev.filter((c) => c._id !== id));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this complaint?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    await deleteComplaint(id);
+
+    alert("Complaint deleted successfully ✅");
+
+    // REFRESH DATA
+    fetchData();
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert("Delete failed ❌");
+
+  }
+};
 
   return (
     <div className="complaints-container">

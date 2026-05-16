@@ -173,6 +173,25 @@ app.put("/complaints/:id", async (req, res) => {
   }
 });
 
+// ---------------- DELETE COMPLAINT ----------------
+app.delete("/complaints/:id", verifyToken, async (req, res) => {
+  try {
+
+    await Complaint.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Complaint deleted successfully",
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+});
+
 
 // ---------------- SERVER ----------------
 app.listen(5000, () => {
