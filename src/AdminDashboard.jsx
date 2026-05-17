@@ -5,6 +5,7 @@ import {
   updateComplaintStatus,
 } from "./api";
 import { useNavigate ,Link} from "react-router-dom";
+
 import "./adminDashboard.css";
 
 import {
@@ -68,6 +69,7 @@ function AdminDashboard() {
 
 const [showPopup, setShowPopup] =
   useState(false);
+  const [activePage, setActivePage] = useState("dashboard");
 
 
   // FETCH DATA

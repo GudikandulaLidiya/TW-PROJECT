@@ -10,7 +10,9 @@ import UserDashboard from "./UserDashboard";
 import MyComplaints from "./MyComplaints";
 import CreateComplaint from "./CreateComplaint";
 import AdminDashboard from "./AdminDashboard";
+import Users from "./users";
 import AllComplaints from "./AllComplaints";
+
 
 // PROTECTED ROUTE
 function ProtectedRoute({ children }) {
@@ -41,6 +43,7 @@ function App() {
           }
         />
 
+
         {/* MY COMPLAINTS */}
         <Route
           path="/mycomplaints"
@@ -62,14 +65,27 @@ function App() {
         />
 
         {/* ADMIN */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+  path="/admin"
+  element={
+    <ProtectedRoute>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/adminDashboard"
+  element={
+    <ProtectedRoute>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+              <Route
+                  path="/users"
+                    element={<Users />}
+                />
 
         {/* ALL */}
         <Route
