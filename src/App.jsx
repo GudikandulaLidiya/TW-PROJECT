@@ -13,12 +13,13 @@ import AdminDashboard from "./AdminDashboard";
 import Users from "./users";
 import AllComplaints from "./AllComplaints";
 
-
-// PROTECTED ROUTE
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
 
-  if (!token || token === "undefined" || token === "null") {
+  const isValidToken =
+    token && token !== "undefined" && token !== "null";
+
+  if (!isValidToken) {
     return <Navigate to="/" replace />;
   }
 
@@ -33,69 +34,39 @@ function App() {
         {/* LOGIN */}
         <Route path="/" element={<Login />} />
 
-        {/* USER DASHBOARD */}
+        {/* USER */}
         <Route
           path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <UserDashboard />
-            </ProtectedRoute>
-          }
+          element={<ProtectedRoute><UserDashboard /></ProtectedRoute>}
         />
 
-
-        {/* MY COMPLAINTS */}
         <Route
           path="/mycomplaints"
-          element={
-            <ProtectedRoute>
-              <MyComplaints />
-            </ProtectedRoute>
-          }
+          element={<ProtectedRoute><MyComplaints /></ProtectedRoute>}
         />
 
-        {/* CREATE */}
         <Route
           path="/create"
-          element={
-            <ProtectedRoute>
-              <CreateComplaint />
-            </ProtectedRoute>
-          }
+          element={<ProtectedRoute><CreateComplaint /></ProtectedRoute>}
         />
 
         {/* ADMIN */}
-      <Route
-  path="/admin"
-  element={
-    <ProtectedRoute>
-      <AdminDashboard />
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/admin"
+          element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}
+        />
 
-<Route
-  path="/adminDashboard"
-  element={
-    <ProtectedRoute>
-      <AdminDashboard />
-    </ProtectedRoute>
-  }
-/>
-              <Route
-                  path="/users"
-                    element={<Users />}
-                />
+        <Route
+          path="/users"
+          element={<ProtectedRoute><Users /></ProtectedRoute>}
+        />
 
-        {/* ALL */}
         <Route
           path="/complaints"
-          element={
-            <ProtectedRoute>
-              <AllComplaints />
-            </ProtectedRoute>
-          }
+          element={<ProtectedRoute><AllComplaints /></ProtectedRoute>}
         />
+
+        <Route path="*" element={<Navigate to="/" />} />
 
       </Routes>
     </BrowserRouter>

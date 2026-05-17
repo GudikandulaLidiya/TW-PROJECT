@@ -338,7 +338,7 @@ const [showPopup, setShowPopup] =
             </li>
 
             <li>
-              <Link to="/allComplaints">
+              <Link to="/Complaints">
             <FaClipboardList />    
                        <span>
                   All Complaints
