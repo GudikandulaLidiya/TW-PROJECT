@@ -325,59 +325,81 @@ const [showPopup, setShowPopup] =
   <>
     <div className="dashboard">
       {/* SIDEBAR */}
-      <div className="sidebar">  
-        <div>
-          
-<h2>CivicTrack</h2>
-          <ul>
-            <li>
-              <Link to="/adminDashboard">
-                <FaHome />  <span>
-                Dashboard</span>
-              </Link>
-            </li>
+     <div className="sidebar">
+  <div>
 
-            <li>
-              <Link to="/Complaints">
-            <FaClipboardList />    
-                       <span>
-                  All Complaints
-                </span>
-              </Link>
-            </li>
+    <h2>CivicTrack</h2>
 
-            <li>
-              <Link to="/users">
-         <FaUsers />    <span>
+    <ul>
 
-                Users
-                </span>
-              </Link>
-            </li>
+      <li>
+        <Link to="/admin">
+          <FaHome />
+          <span>
+            Dashboard
+          </span>
+        </Link>
+      </li>
 
-            <li>
-              <Link to="/login">
-              <FaSignOutAlt />   <span>
-                Logout  </span>
-              </Link>
-            </li>
-          </ul>
-        </div>
+      <li>
+        <Link to="/complaints">
+          <FaClipboardList />
+          <span>
+            All Complaints
+          </span>
+        </Link>
+      </li>
 
-        {/* HELP BOX */}
-        <div className="help-box">
-          <FaHeadset size={40} />
+      <li>
+        <Link to="/users">
+          <FaUsers />
+          <span>
+            Users
+          </span>
+        </Link>
+      </li>
 
-          <h3>
-            Need Help?
-          </h3>
+      <li>
 
-          <Link to="/support">
-            Contact Support
-          </Link>
-        </div>
-      </div>
+        <button
+          type="button"
+          onClick={() => {
 
+            localStorage.clear();
+
+            navigate("/");
+
+          }}
+        >
+          <FaSignOutAlt />
+
+          <span>
+            Logout
+          </span>
+
+        </button>
+
+      </li>
+
+    </ul>
+
+  </div>
+
+  {/* HELP BOX */}
+  <div className="help-box">
+
+    <FaHeadset size={40} />
+
+    <h3>
+      Need Help?
+    </h3>
+
+    <Link to="/support">
+      Contact Support
+    </Link>
+
+  </div>
+</div>
       {/* MAIN */}
       <div className="main">
         {/* TOPBAR */}

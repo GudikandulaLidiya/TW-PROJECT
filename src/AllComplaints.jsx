@@ -151,43 +151,79 @@ const resolvedNoFeedbackCount = openComplaints.filter(
 
  <div className="sidebar">
   <div>
+
     <h2>CivicTrack</h2>
 
     <ul>
+
       <li>
-        <Link to="/adminDashboard">
-          <FaHome /> <span>Dashboard</span>
+        <Link to="/admin">
+          <FaHome />
+          <span>
+            Dashboard
+          </span>
         </Link>
       </li>
 
       <li>
         <Link to="/complaints">
-          <FaClipboardList /> <span>All Complaints</span>
+          <FaClipboardList />
+          <span>
+            All Complaints
+          </span>
         </Link>
       </li>
 
       <li>
         <Link to="/users">
-          <FaUsers /> <span>Users</span>
+          <FaUsers />
+          <span>
+            Users
+          </span>
         </Link>
       </li>
 
       <li>
-        <Link to="/">
-          <FaSignOutAlt /> <span>Logout</span>
-        </Link>
+
+        <button
+          type="button"
+          onClick={() => {
+
+            localStorage.clear();
+
+            navigate("/");
+
+          }}
+        >
+          <FaSignOutAlt />
+
+          <span>
+            Logout
+          </span>
+
+        </button>
+
       </li>
+
     </ul>
+
   </div>
 
   {/* HELP BOX */}
-  <div className="sidebar-help">
-    <FaHeadset size={35} />
-    <p>Need Help?</p>
-    <Link to="/support">Contact Support</Link>
+  <div className="help-box">
+
+    <FaHeadset size={40} />
+
+    <h3>
+      Need Help?
+    </h3>
+
+    <Link to="/support">
+      Contact Support
+    </Link>
+
   </div>
 </div>
-
   <div className="all-complaints-container">
 
     <h1 className="all-complaints-title">

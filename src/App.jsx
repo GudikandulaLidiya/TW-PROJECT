@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import UserDashboard from "./UserDashboard";
 import MyComplaints from "./MyComplaints";
 import CreateComplaint from "./CreateComplaint";
@@ -33,6 +34,10 @@ function App() {
 
         {/* LOGIN */}
         <Route path="/" element={<Login />} />
+        <Route
+  path="/register"
+  element={<Register />}
+/>
 
         {/* USER */}
         <Route

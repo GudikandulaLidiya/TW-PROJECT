@@ -20,7 +20,10 @@ function UserDashboard() {
     return saved ? new Set(JSON.parse(saved)) : new Set();
   });
 
-  const user = JSON.parse(localStorage.getItem("user"));
+const username =
+  localStorage.getItem(
+    "username"
+  );
 
   // FETCH DATA
   const fetchData = async () => {
@@ -142,50 +145,72 @@ const handleFeedbackUpload = async (file, complaintId) => {
 
       {/* SIDEBAR */}
       <div className="sidebar">
-        <h2>CivicTrack</h2>
 
-        <ul>
-          <li><Link to="/dashboard">Dashboard</Link></li>
-          <li><Link to="/create">Create Complaint</Link></li>
-          <li><Link to="/mycomplaints">My Complaints</Link></li>
-          <li><Link to="/admin">Admin Dashboard</Link></li>
-          
-        
+  <h2>CivicTrack</h2>
 
-        <div className="sidebar-help">
+  <ul>
 
-  <h3>Need Help?</h3>
+    <li>
+      <Link to="/dashboard">
+        Dashboard
+      </Link>
+    </li>
 
-  <p>
-    Contact support for assistance
-  </p>
+    <li>
+      <Link to="/create">
+        Create Complaint
+      </Link>
+    </li>
 
-  <button>
-    Support
-  </button>
+    <li>
+      <Link to="/mycomplaints">
+        My Complaints
+      </Link>
+    </li>
+
+    <li>
+      <button
+        onClick={() => {
+
+          localStorage.removeItem(
+            "token"
+          );
+
+          localStorage.removeItem(
+            "user"
+          );
+
+          navigate("/");
+
+        }}
+      >
+        Logout
+      </button>
+    </li>
+
+  </ul>
+
+  {/* HELP SECTION */}
+  <div className="sidebar-help">
+
+    <h3>Need Help?</h3>
+
+    <p>
+      Contact support for assistance
+    </p>
+
+    <button>
+      Support
+    </button>
+
+  </div>
 
 </div>
-
-
-          <li>
-            <button
-              onClick={() => {
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                navigate("/");
-              }}
-            >
-              Logout
-            </button>
-          </li>
-        </ul>
-      </div>
-
       {/* MAIN */}
       <div className="main-content">
 
         <div className="welcome-section">
-          <h1>Welcome, {user?.name || user?.username || "User"} 👋</h1>
+          <h1>Welcome, {username || "User"} 👋</h1>
           <p>Here’s what’s happening in your community</p>
         </div>
         

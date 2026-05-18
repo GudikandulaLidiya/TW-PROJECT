@@ -63,43 +63,81 @@ function Users() {
     <div className="dashboard">
 
       {/* SIDEBAR */}
-      <div className="sidebar">
-        <div>
-          <h2>CivicTrack</h2>
+     <div className="sidebar">
+  <div>
 
-          <ul>
-            <li>
-              <Link to="/adminDashboard">
-                <FaHome /> <span>Dashboard</span>
-              </Link>
-            </li>
+    <h2>CivicTrack</h2>
 
-            <li>
-              <Link to="/allComplaints">
-                <FaClipboardList /> <span>All Complaints</span>
-              </Link>
-            </li>
+    <ul>
 
-            <li>
-              <Link to="/users">
-                <FaUsers /> <span>Users</span>
-              </Link>
-            </li>
+      <li>
+        <Link to="/admin">
+          <FaHome />
+          <span>
+            Dashboard
+          </span>
+        </Link>
+      </li>
 
-            <li>
-              <Link to="/login">
-                <FaSignOutAlt /> <span>Logout</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
+      <li>
+        <Link to="/complaints">
+          <FaClipboardList />
+          <span>
+            All Complaints
+          </span>
+        </Link>
+      </li>
 
-        <div className="help-box">
-          <FaHeadset size={40} />
-          <h3>Need Help?</h3>
-          <Link to="/support">Contact Support</Link>
-        </div>
-      </div>
+      <li>
+        <Link to="/users">
+          <FaUsers />
+          <span>
+            Users
+          </span>
+        </Link>
+      </li>
+
+      <li>
+
+        <button
+          type="button"
+          onClick={() => {
+
+            localStorage.clear();
+
+            navigate("/");
+
+          }}
+        >
+          <FaSignOutAlt />
+
+          <span>
+            Logout
+          </span>
+
+        </button>
+
+      </li>
+
+    </ul>
+
+  </div>
+
+  {/* HELP BOX */}
+  <div className="help-box">
+
+    <FaHeadset size={40} />
+
+    <h3>
+      Need Help?
+    </h3>
+
+    <Link to="/support">
+      Contact Support
+    </Link>
+
+  </div>
+</div>
 
       {/* MAIN */}
       <div className="main">

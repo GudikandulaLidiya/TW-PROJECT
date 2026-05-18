@@ -61,51 +61,68 @@ const handleDelete = async (id) => {
     <div className="complaints-container">
 
       {/* SIDEBAR */}
-      <div className="sidebar">
-        <h2>CivicTrack</h2>
+     <div className="sidebar">
 
-        <ul>
-          <li>
-            <Link to="/">Dashboard</Link>
-          </li>
+  <h2>CivicTrack</h2>
 
-          <li>
-            <Link to="/create">Create Complaint</Link>
-          </li>
+  <ul>
 
-          <li>
-            <Link to="/mycomplaints">My Complaints</Link>
-          </li>
+    <li>
+      <Link to="/dashboard">
+        Dashboard
+      </Link>
+    </li>
 
-          <li>
-            <Link to="/admin">Admin Dashboard</Link>
-          </li>
-<div className="sidebar-help">
+    <li>
+      <Link to="/create">
+        Create Complaint
+      </Link>
+    </li>
 
-  <h3>Need Help?</h3>
+    <li>
+      <Link to="/mycomplaints">
+        My Complaints
+      </Link>
+    </li>
 
-  <p>
-    Contact support for assistance
-  </p>
+    <li>
+      <button
+        onClick={() => {
 
-  <button>
-    Support
-  </button>
+          localStorage.removeItem(
+            "token"
+          );
+
+          localStorage.removeItem(
+            "user"
+          );
+
+          navigate("/");
+
+        }}
+      >
+        Logout
+      </button>
+    </li>
+
+  </ul>
+
+  {/* HELP SECTION */}
+  <div className="sidebar-help">
+
+    <h3>Need Help?</h3>
+
+    <p>
+      Contact support for assistance
+    </p>
+
+    <button>
+      Support
+    </button>
+
+  </div>
 
 </div>
-          <li>
-       <button
-  onClick={() => {
-    localStorage.clear();
-    window.location.href = "/";
-  }}
->
-  Logout
-</button>
-          </li>
-        </ul>
-      </div>
-
       {/* MAIN CONTENT */}
       <div className="complaints-main">
         <h1>My Complaints</h1>

@@ -30,6 +30,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+app.get("/", (req, res) => {
+  res.send("Backend Running");
+});
 
 
 // ---------------- SIGNUP ----------------
@@ -62,35 +65,90 @@ app.post("/signup", async (req, res) => {
 
 
 // ---------------- LOGIN ----------------
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+app.post(
+  "/login",
+  async (req, res) => {
 
-    const user = await User.findOne({ email });
+    try {
 
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      const {
+        username,
+        password,
+      } = req.body;
+
+      // FIND USER
+      const user =
+        await User.findOne({
+          name: username,
+        });
+
+      if (!user) {
+
+        return res
+          .status(400)
+          .json({
+            message:
+              "User not found",
+          });
+
+      }
+
+      // CHECK PASSWORD
+      const isMatch =
+        await bcrypt.compare(
+          password,
+          user.password
+        );
+
+      if (!isMatch) {
+
+        return res
+          .status(400)
+          .json({
+            message:
+              "Invalid password",
+          });
+
+      }
+
+      // TOKEN
+      const token =
+        jwt.sign(
+          {
+            id: user._id,
+            role:
+              user.role,
+          },
+          "secretkey",
+          {
+            expiresIn: "7d",
+          }
+        );
+
+      // RESPONSE
+      res.json({
+        token,
+
+        user: {
+          id: user._id,
+          username:
+            user.name,
+          email:
+            user.email,
+          role:
+            user.role,
+        },
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
     }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
-    }
-
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      "secretkey",
-      { expiresIn: "7d" }
-    );
-
-    res.json({ token, user });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
-});
-
+);
 
 // ---------------- CREATE COMPLAINT (TOKEN) ----------------
 app.post(
@@ -195,35 +253,94 @@ app.get("/api/users", async (req, res) => {
   const users = await User.find();
   res.json(users);
 });
-
-
-// ---------------- SERVER ----------------
-app.listen(5000, () => {
-  console.log("Server Started On Port 5000");
-});
-
-app.put(
-  "/complaints/feedback/:id",
-  verifyToken,
-  upload.single("image"),
+app.post(
+  "/register",
   async (req, res) => {
     try {
-      const updated = await Complaint.findByIdAndUpdate(
-        req.params.id,
-        {
- feedbackImage: req.file
-  ? `http://localhost:5000/uploads/${req.file.filename}`
-  : null,
-        },
-        { new: true }
-      );
+      const {
+        username,
+        email,
+        password,
+        role,
+      } = req.body;
 
-      res.json({
-        message: "Feedback submitted successfully",
-        data: updated,
+      // CHECK EXISTING USER
+      const existingUser =
+        await User.findOne({
+          email,
+        });
+
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "User already exists",
+          });
+      }
+
+      // HASH PASSWORD
+      const hashedPassword =
+        await bcrypt.hash(
+          password,
+          10
+        );
+
+      // CREATE USER
+      const newUser =
+        new User({
+          name: username,
+          email,
+          password:
+            hashedPassword,
+          role,
+        });
+
+      // SAVE
+      await newUser.save();
+
+      // TOKEN
+      const token =
+        jwt.sign(
+          {
+            id: newUser._id,
+            role:
+              newUser.role,
+          },
+          "secretkey",
+          {
+            expiresIn: "7d",
+          }
+        );
+
+      // RESPONSE
+      res.status(201).json({
+        token,
+
+        user: {
+          id: newUser._id,
+          username:
+            newUser.name,
+          email:
+            newUser.email,
+          role:
+            newUser.role,
+        },
       });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          "Registration failed",
+      });
+
     }
   }
 );
+// SERVER MUST BE LAST
+app.listen(5000, () => {
+  console.log(
+    "Server Started On Port 5000"
+  );
+});

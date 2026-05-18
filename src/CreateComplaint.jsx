@@ -73,34 +73,68 @@ function CreateComplaint() {
     <div className="create-container">
 
       {/* SIDEBAR */}
-      <div className="sidebar">
-        <h2>CivicTrack</h2>
+   <div className="sidebar">
 
-        <ul>
-          <li><Link to="/dashboard">Dashboard</Link></li>
-          <li><Link to="/create">Create Complaint</Link></li>
-          <li><Link to="/mycomplaints">My Complaints</Link></li>
-          <li><Link to="/admin">Admin Dashboard</Link></li>
-<div className="sidebar-help">
+  <h2>CivicTrack</h2>
 
-  <h3>Need Help?</h3>
+  <ul>
 
-  <p>
-    Contact support for assistance
-  </p>
+    <li>
+      <Link to="/dashboard">
+        Dashboard
+      </Link>
+    </li>
 
-  <button>
-    Support
-  </button>
+    <li>
+      <Link to="/create">
+        Create Complaint
+      </Link>
+    </li>
+
+    <li>
+      <Link to="/mycomplaints">
+        My Complaints
+      </Link>
+    </li>
+
+    <li>
+      <button
+        onClick={() => {
+
+          localStorage.removeItem(
+            "token"
+          );
+
+          localStorage.removeItem(
+            "user"
+          );
+
+          navigate("/");
+
+        }}
+      >
+        Logout
+      </button>
+    </li>
+
+  </ul>
+
+  {/* HELP SECTION */}
+  <div className="sidebar-help">
+
+    <h3>Need Help?</h3>
+
+    <p>
+      Contact support for assistance
+    </p>
+
+    <button>
+      Support
+    </button>
+
+  </div>
 
 </div>
-          <li>
-            <button onClick={handleLogout}>
-              Logout
-            </button>
-          </li>
-        </ul>
-      </div>
 
       {/* FORM SECTION */}
       <div className="form-section">
