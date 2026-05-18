@@ -9,6 +9,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("./models/Users"); // ✅ FIXED
 const verifyToken = require("./middleware/authMiddleware");
+const crypto = require("crypto");
 
 const app = express();
 
@@ -338,6 +339,148 @@ app.post(
     }
   }
 );
+
+app.post(
+  "/forgot-password",
+  async (req, res) => {
+
+    try {
+
+      const { email } = req.body;
+
+    const user =
+  await User.findOne({
+    email:
+      email.trim(),
+  });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      const token =
+        crypto.randomBytes(32).toString("hex");
+
+      user.resetToken = token;
+
+      user.resetTokenExpiry =
+        Date.now() + 3600000;
+
+      await user.save();
+
+      // DEMO LINK
+            const resetLink =
+        `/reset-password/${token}`;
+
+      res.json({
+        message:
+          "Reset link generated",
+        resetLink,
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        message: err.message,
+      });
+
+    }
+  }
+);
+
+app.post(
+  "/reset-password/:token",
+  async (req, res) => {
+    console.log(req.body.password);
+    try {
+
+      const user =
+        await User.findOne({
+          resetToken:
+            req.params.token,
+
+          resetTokenExpiry: {
+            $gt: Date.now(),
+          },
+        });
+
+      if (!user) {
+        return res.status(400).json({
+          message:
+            "Invalid or expired token",
+        });
+      }
+
+      const hashedPassword =
+        await bcrypt.hash(
+          req.body.password,
+          10
+        );
+
+      user.password = hashedPassword;
+
+      user.resetToken = undefined;
+            user.resetTokenExpiry = undefined;
+
+      await user.save();
+
+      res.json({
+        message:
+          "Password updated successfully",
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        message: err.message,
+      });
+
+    }
+  }
+);
+app.put(
+  "/complaints/feedback/:id",
+  verifyToken,
+  upload.single("image"),
+
+  async (req, res) => {
+
+    try {
+
+      const updated =
+        await Complaint.findByIdAndUpdate(
+
+          req.params.id,
+
+          {
+            feedbackImage:
+              req.file
+                ? `http://localhost:5000/uploads/${req.file.filename}`
+                : null,
+          },
+
+          { new: true }
+        );
+
+      res.json({
+        message:
+          "Feedback submitted successfully",
+
+        data: updated,
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+  }
+);
+
 // SERVER MUST BE LAST
 app.listen(5000, () => {
   console.log(

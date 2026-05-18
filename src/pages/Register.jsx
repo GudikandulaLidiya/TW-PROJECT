@@ -117,13 +117,13 @@ if (
   res.user.role ===
   "admin"
 ) {
-  navigate(
-    "/adminDashboard"
-  );
+
+  navigate("/admin");
+
 } else {
-  navigate(
-    "/userDashboard"
-  );
+
+  navigate("/dashboard");
+
 }
       } catch (err) {
 
@@ -301,11 +301,9 @@ if (
             style={
               styles.loginLink
             }
-            onClick={() =>
-              navigate(
-                "/login"
-              )
-            }
+           onClick={() =>
+  navigate("/")
+}
           >
             {" "}
             Login
